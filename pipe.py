@@ -16,10 +16,9 @@ class Pipe(object):
     
     def message_generator(node_id, env, out_pipe):
     
-        while True:
-            yield env.timeout(random.randint(6, 10))
-            msg = (env.now, '%s says hello at %d' % (node_id, env.now))
-            out_pipe.put(msg)
+        yield env.timeout(random.randint(6, 10))
+        msg = (env.now, '%s says hello at %d' % (node_id, env.now))
+        out_pipe.put(msg)
 
     def get_output_conn(self):
         pipe = simpy.Store(self.env, capacity=self.capacity)
@@ -27,15 +26,15 @@ class Pipe(object):
         return pipe
 
     def message_consumer(node_id, env, in_pipe):
-        while True:
-            msg = yield in_pipe.get()
-            
-            if msg[0] < env.now:
-                print('LATE Getting Message: at time %d: %s received message: %s' %
-                    (env.now, node_id, msg[1]))
+    
+        msg = yield in_pipe.get()
+        
+        if msg[0] < env.now:
+            print('LATE Getting Message: at time %d: %s received message: %s' %
+                (env.now, node_id, msg[1]))
 
-            else:
-                print('at time %d: %s received message: %s.' %
-                    (env.now, node_id, msg[1]))
+        else:
+            print('at time %d: %s received message: %s.' %
+                (env.now, node_id, msg[1]))
 
-            yield env.timeout(random.randint(4, 8))
+        yield env.timeout(random.randint(4, 8))
