@@ -1,4 +1,5 @@
 import simpy
+import random
 from pipe import Pipe
 
 class Node() :
@@ -6,21 +7,55 @@ class Node() :
         self.id = id
         self.env = env
 
-    def message(self,env,node_2): 
-        bc_pipe = Pipe(env)
-        env.process(Pipe.message_generator(self.id, env, bc_pipe))
-        env.process(Pipe.message_consumer(self.id, env, bc_pipe.get_output_conn()))
-        env.process(Pipe.message_consumer(node_2.id, env, bc_pipe.get_output_conn()))
+    def message(self,env,node_1,node_2,info):
+        """
+        info : liste des nouveaux voisins exemple : [1,9,R,L,5]  
+        voisin droite = 5 pour noeud.id=1 et voisin gauche = 5 pour noeud.id =50
 
+        """
+        bc_pipe = Pipe(env)
+        env.process(Pipe.message_generator(self, env, bc_pipe,info))
+        env.process(Pipe.message_consumer(node_1, env, bc_pipe.get_output_conn()))
+        env.process(Pipe.message_consumer(node_2, env, bc_pipe.get_output_conn()))
+    
+    def setNeighbors(self,info):
+        self.l_n=info[0]
+        self.r_n=info[1]
+
+    def setNeighborsR(self,node):
+        self.r_n=node
+    def setNeighborsL(self,node):
+        self.l_n=node
+
+    def add(self,liste,env):
+        node=random.randint(0,len(liste)-1)
+        print(node)
+        self.verification(liste[node],env)
+    
+    def verification(self,node,env):
+
+        if node.l_n.id < self.id and self.id < node.id:
+            self.r_n = node
+            self.l_n = node.l_n
+            self.message(env,node.l_n,node,[node.l_n.id,node.id,"R","L",self])
+
+
+        elif node.id < self.id and self.id < node.r_n.id:
+            self.r_n = node.r_n
+            self.l_n = node
+            self.message(env,node.r_n,node,[node.id,node.r_n.id,"R","L",self])
+        
+
+        else:
+            if node.id < self.id:
+                self.verification(node.r_n,env)
+            
+            if self.id < node.id:
+                self.verification(node.l_n,env)
+                
+        
+    def checkNeighbors(self):
+        print("L : "+str(self.l_n.id) + " R : "+str(self.r_n.id))
 
     def wait(self,duration):
         yield self.env.timeout(duration)
-
-env = simpy.Environment()
-node_1 = Node(1,env)
-node_2 = Node(2,env)
-
-node_1.message(env,node_2)
-
-env.run(until=15)
-    
