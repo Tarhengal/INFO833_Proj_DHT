@@ -20,7 +20,7 @@ def backgroundCheck(liste):
         
 
 def createNode(env,liste,liste_ID,n):
-    for i in range(n+1):
+    for i in range(n):
         number = randomNotInList(liste_ID)
         print(number)
         node = Node(number,env)
@@ -72,7 +72,8 @@ createGraph(liste_ID,liste)
 #############################################################
 ########### Choisir le nombre de noeud voulu ################
 ## attention max 48, car le plus gros node est défini a 50 ##
-createNode(env,liste,liste_ID,9)
+createNode(env,liste,liste_ID,5)
 
+#env.run(until=30)
 
 
