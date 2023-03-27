@@ -54,6 +54,14 @@ class Pipe(object):
             # stop time interuption
             print("Validation from %d to %d " % ( info[0].id ,info[1].id ))
 
+        if info[-1]==4:
+            if node.id == info[0].id:
+                node.r_n=info[1]
+            if node.id == info[1].id:
+                node.l_n=info[0]
+
+
+
         
         yield env.timeout(random.randint(4, 8))
 

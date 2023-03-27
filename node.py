@@ -31,9 +31,12 @@ class Node() :
     def setNeighborsL(self,node):
         self.l_n=node
 
+    def delete(self,env):
+        self.message(env,self.l_n,self.r_n,[self.l_n,self.r_n,4],2)
+
+
     def add(self,liste,env):
         node=random.randint(0,len(liste)-1)
-        print(node)
         self.verification(liste[node],env)
     
     def verification(self,node,env):

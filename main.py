@@ -18,16 +18,29 @@ def backgroundCheck(liste):
         print("L = "+str(i.l_n.id))
         print("R = "+str(i.r_n.id))
         
+def deleteNode(node,env,liste_ID,liste):
+    liste.remove(node)
+    liste_ID.remove(node.id)
+    node.delete(env)
+    env.run(until=90)
+    createGraph(liste_ID,liste)
+
 
 def createNode(env,liste,liste_ID,n):
     for i in range(n):
         number = randomNotInList(liste_ID)
         print(number)
+
         node = Node(number,env)
         node.add(liste,env)
+
         liste.append(node)
         liste_ID.append(number)
+     
         env.run(until=i*10+10)
+
+        #yield env.timeout(8)
+
         backgroundCheck(liste)
         createGraph(liste_ID,liste)
         
@@ -67,13 +80,14 @@ createGraph(liste_ID,liste)
 
 
 
-
-
 #############################################################
 ########### Choisir le nombre de noeud voulu ################
 ## attention max 48, car le plus gros node est défini a 50 ##
-createNode(env,liste,liste_ID,5)
 
-#env.run(until=30)
+createNode(env,liste,liste_ID,5)
+#env.run(until=100)
+
+print("suppression du noeud : "+str(liste[2].id))
+deleteNode(liste[2],env,liste_ID,liste)
 
 
