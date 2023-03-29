@@ -40,18 +40,15 @@ class Node() :
         self.verification(liste[node],env)
     
     def verification(self,node,env):
-
         if node.l_n.id < self.id and self.id < node.id:
             self.r_n = node
             self.l_n = node.l_n
             self.message(env,node.l_n,node,[node.l_n.id,node.id,"R","L",self,1],2)
 
-
         elif node.id < self.id and self.id < node.r_n.id:
             self.r_n = node.r_n
             self.l_n = node
             self.message(env,node.r_n,node,[node.id,node.r_n.id,"R","L",self,1],2)
-        
 
         else:
             if node.id < self.id:

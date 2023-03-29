@@ -24,6 +24,7 @@ def deleteNode(node,env,liste_ID,liste):
     node.delete(env)
     env.run(until=90)
     createGraph(liste_ID,liste)
+    return(liste_ID,liste)
 
 
 def createNode(env,liste,liste_ID,n):
@@ -39,22 +40,21 @@ def createNode(env,liste,liste_ID,n):
      
         env.run(until=i*10+10)
 
-        #yield env.timeout(8)
-
-        backgroundCheck(liste)
+        #backgroundCheck(liste)
         createGraph(liste_ID,liste)
         
-    return(liste_ID)
+    return(liste_ID,liste)
 
 
 
-minNode = 1
-maxNode = 50
+
 
 
 #####################################
 ############## SET UP ###############
 #####################################
+minNode = 1
+maxNode = 10   # peut changer ICI
 
 env = simpy.Environment()
 
@@ -69,7 +69,6 @@ node_max.setNeighbors([node_1,node_1])
 liste.append(node_1)
 liste.append(node_max)
 
-
 liste_ID =[node_1.id,node_max.id]
 
 createGraph(liste_ID,liste)
@@ -82,12 +81,40 @@ createGraph(liste_ID,liste)
 
 #############################################################
 ########### Choisir le nombre de noeud voulu ################
-## attention max 48, car le plus gros node est défini a 50 ##
+## attention max 8, car le plus gros node est défini a 10 ##
 
-createNode(env,liste,liste_ID,5)
-#env.run(until=100)
+(liste_ID,liste)=createNode(env,liste,liste_ID,5)
+############################################
+
+
+
+
+
+############################################
+#####     suppresion d'un noeud      ####
 
 print("suppression du noeud : "+str(liste[2].id))
-deleteNode(liste[2],env,liste_ID,liste)
+(liste_ID,liste)=deleteNode(liste[2],env,liste_ID,liste)
+############################################
 
 
+
+
+
+########################################################################################
+###################  Ajout de deux noeuds simultanément    #############################
+## Warning ne fonctionne pas tout le temps a cause du systeme de message non terminer ##
+
+for i in range(0,2):
+    number = randomNotInList(liste_ID)
+    print(number)
+    node = Node(number,env)
+    node.add(liste,env)
+
+    liste.append(node)
+    liste_ID.append(number)
+
+env.run(until=100)
+
+createGraph(liste_ID,liste)
+############################################
